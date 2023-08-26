@@ -1,7 +1,8 @@
-import json
 from time import sleep
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+
+from save_file import SaveFile
 
 
 print(
@@ -30,28 +31,27 @@ elements_list = navigator.find_elements(By.CSS_SELECTOR, '.public')
 
 repositories = []
 
-
 for i in elements_list:
-    repository_info = { 'name': '', 'desc': '' }
+    repository_info = { 'nome': '', 'descricao': '' }
     try:
         name = i.find_element(By.CSS_SELECTOR, '.wb-break-all a').text
         desc = i.find_element(By.CSS_SELECTOR, 'div p')
     except:
-        repository_info['desc'] = ''
+        repository_info['descricao'] = ''
     else:
-        repository_info['desc'] = desc.text
+        repository_info['descricao'] = desc.text
     finally:
-        repository_info['name'] = name
+        repository_info['nome'] = name
         repositories.append(repository_info)
 
-
-# Printar na tela o resultado final!
-for i, repository in enumerate(repositories):
-    results = json.dumps(repository, indent=4)
-    print(f'{i + 1} - {results} \n')
-
 sleep(3)
-
 navigator.quit()
 
+
 # Salvar o Resultado em um arquivo
+new_file = input('Digite, APENAS o nome, do arquivo que sera salvo em (.csv e .json): ')
+print('\n')
+
+files = SaveFile()
+files.save_file_csv(repositories, new_file)
+files.save_file_json(repositories, new_file)
